@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>For Alina ❤️</title>
+
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    font-family: Arial, sans-serif;
+    text-align:center;
+    color:white;
+
+    /* ❤️ HER PHOTO AS BACKGROUND */
+    background:url("photo.jpg") no-repeat center center/cover;
+}
+
+/* dark overlay for readability */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    z-index:-1;
+}
+
+h1{margin-top:60px;font-size:42px;}
+button{
+    padding:12px 25px;
+    font-size:18px;
+    margin:10px;
+    border-radius:12px;
+    border:none;
+    cursor:pointer;
+}
+
+/* floating hearts */
+.heart{
+    position:absolute;
+    animation: float 6s linear infinite;
+}
+@keyframes float{
+    from{transform:translateY(100vh);}
+    to{transform:translateY(-10vh);}
+}
+
+/* confetti */
+.confetti{
+    position:absolute;
+    width:8px;
+    height:12px;
+    animation: fall 3s linear forwards;
+}
+@keyframes fall{
+    to{transform:translateY(100vh) rotate(720deg); opacity:0;}
+}
+
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+}
+
+#game{
+    display:none;
+    margin-top:40px;
+}
+#score{font-size:24px;}
+</style>
+</head>
+
+<body>
+
+<!-- 🎵 YOUR CUSTOM SONG -->
+<audio autoplay loop>
+  <source src="song.mp3" type="audio/mpeg">
+</audio>
+
+<canvas id="fireworks"></canvas>
+
+<h1>Hey Alina ❤️</h1>
+<h2>I made this just for you…</h2>
+<h2>Will you be my Valentine?</h2>
+
+<button onclick="startGame()">YES 😍</button>
+<button id="noBtn" onmouseover="moveNo()">NO 🙄</button>
+
+<div id="game">
+    <h2>Catch 5 hearts to unlock my question 😄</h2>
+    <div id="score">Hearts: 0 / 5</div>
+</div>
+
+<script>
+/* ---------- NO button runs away ---------- */
+function moveNo(){
+    const btn=document.getElementById("noBtn");
+    btn.style.position="absolute";
+    btn.style.left=Math.random()*80+"%";
+    btn.style.top=Math.random()*80+"%";
+}
+
+/* ---------- floating hearts ---------- */
+setInterval(()=>{
+    let h=document.createElement("div");
+    h.innerHTML="❤️";
+    h.className="heart";
+    h.style.left=Math.random()*100+"%";
+    h.style.fontSize=(Math.random()*20+15)+"px";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+},300);
+
+/* ---------- mini game ---------- */
+let score=0;
+
+function startGame(){
+    document.getElementById("game").style.display="block";
+    spawnHeart();
+}
+
+function spawnHeart(){
+    let h=document.createElement("div");
+    h.innerHTML="💖";
+    h.style.position="absolute";
+    h.style.left=Math.random()*90+"%";
+    h.style.top=Math.random()*80+"%";
+    h.style.fontSize="40px";
+    h.style.cursor="pointer";
+
+    h.onclick=function(){
+        score++;
+        document.getElementById("score").innerText="Hearts: "+score+" / 5";
+        h.remove();
+
+        if(score>=5){
+            win();
+        }else{
+            spawnHeart();
+        }
+    }
+
+    document.body.appendChild(h);
+}
+
+/* ---------- confetti ---------- */
+function confettiBurst(){
+    const colors=["#ff2e63","#ffd166","#06d6a0","#118ab2","#ffffff"];
+    for(let i=0;i<150;i++){
+        let c=document.createElement("div");
+        c.className="confetti";
+        c.style.left=Math.random()*100+"%";
+        c.style.background=colors[Math.floor(Math.random()*colors.length)];
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),3000);
+    }
+}
+
+/* ---------- fireworks ---------- */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+function firework(x,y){
+    for(let i=0;i<80;i++){
+        let angle=Math.random()*2*Math.PI;
+        let speed=Math.random()*5+2;
+        let vx=Math.cos(angle)*speed;
+        let vy=Math.sin(angle)*speed;
+        let life=60;
+
+        (function draw(px,py){
+            if(life--<=0) return;
+            ctx.fillStyle="hsl("+Math.random()*360+",100%,60%)";
+            ctx.fillRect(px,py,3,3);
+            requestAnimationFrame(()=>draw(px+vx,py+vy));
+        })(x,y);
+    }
+}
+
+/* ---------- win screen ---------- */
+function win(){
+    confettiBurst();
+
+    for(let i=0;i<6;i++){
+        setTimeout(()=>firework(Math.random()*canvas.width,Math.random()*canvas.height/2),i*400);
+    }
+
+    document.body.innerHTML += `
+    <h1 style="margin-top:120px;">
+    You caught my heart ❤️<br><br>
+    Will you be my Valentine forever? 🌹
+    </h1>
+    <button onclick="alert('Best decision ever ❤️ I love you!')">YES 💍</button>
+    `;
+}
+</script>
+
+</body>
+</html>
+
