@@ -12,9 +12,9 @@ body{
     color:white;
 
     /* ❤️ HER PHOTO AS BACKGROUND */
-   background:url("photo.jpg") no-repeat center center;
-background-size: 90%;
-background-color: black;
+ background: url("photo.jpg") no-repeat center center fixed;
+background-size: cover;
+
 
 /* dark overlay for readability */
 body::before{
@@ -36,14 +36,6 @@ button{
 }
 
 /* floating hearts */
-.heart{
-    position:absolute;
-    animation: float 6s linear infinite;
-}
-@keyframes float{
-    from{transform:translateY(100vh);}
-    to{transform:translateY(-10vh);}
-}
 
 /* confetti */
 .confetti{
@@ -102,15 +94,6 @@ function moveNo(){
 }
 
 /* ---------- floating hearts ---------- */
-setInterval(()=>{
-    let h=document.createElement("div");
-    h.innerHTML="❤️";
-    h.className="heart";
-    h.style.left=Math.random()*100+"%";
-    h.style.fontSize=(Math.random()*20+15)+"px";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),6000);
-},300);
 
 /* ---------- mini game ---------- */
 let score=0;
